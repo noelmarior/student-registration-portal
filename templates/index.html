@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: none; }
+        .header-bg { background-color: #0d6efd; color: white; border-radius: 5px 5px 0 0; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="header-bg text-center">
+                    <h2 class="mb-0">Student Registration</h2>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form action="/register" method="POST" enctype="multipart/form-data" id="regForm" class="needs-validation">
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Name</label>
+                                <input type="text" name="name" class="form-control validate" required>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" name="email" id="emailInput" class="form-control validate" required>
+                                <small id="emailError" class="text-danger fw-bold" style="display:none;"></small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Phone</label>
+                            <input type="text" name="phone" id="phoneInput" class="form-control validate" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                            <small id="phoneError" class="text-danger fw-bold" style="display:none;"></small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Gender</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input validate" type="radio" name="gender" value="Male" required>
+                                <label class="form-check-label">Male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input validate" type="radio" name="gender" value="Female" required>
+                                <label class="form-check-label">Female</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input validate" type="radio" name="gender" value="Other" required>
+                                <label class="form-check-label">Other</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Address</label>
+                            <textarea name="address" class="form-control validate" rows="3" required></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Stream</label>
+                                <select name="stream" id="streamSelect" class="form-select validate" required>
+                                    <option value="">-- Select Stream --</option>
+                                    <option value="Science">Science</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Commerce">Commerce</option>
+                                    <option value="Arts">Arts</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Course</label>
+                                <select name="course" id="courseSelect" class="form-select validate" required>
+                                    <option value="">-- Select Stream First --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Photo Upload</label>
+                            <input type="file" name="photo" class="form-control validate" accept="image/*" required>
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input validate" id="termsCheck">
+                            <label class="form-check-label" for="termsCheck">I agree to the Terms and Conditions</label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" disabled>Proceed</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- EXACT SAME LOGIC AS BEFORE, JUST RE-APPLIED ---
+    const courseData = {
+        "Science": ["Physics", "Chemistry", "Biology"],
+        "Engineering": ["Computer Science", "Mechanical", "Civil"],
+        "Commerce": ["Accounting", "Economics", "Business Studies"],
+        "Arts": ["History", "Political Science", "English Lit"]
+    };
+
+    const streamSelect = document.getElementById('streamSelect');
+    const courseSelect = document.getElementById('courseSelect');
+    const submitBtn = document.getElementById('submitBtn');
+    const formInputs = document.querySelectorAll('.validate');
+
+    streamSelect.addEventListener('change', function() {
+        const selectedStream = this.value;
+        courseSelect.innerHTML = '<option value="">-- Select Course --</option>'; 
+        if (selectedStream && courseData[selectedStream]) {
+            courseData[selectedStream].forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseSelect.appendChild(option);
+            });
+        }
+        checkFormValidity();
+    });
+
+    function checkFormValidity() {
+        let isValid = true;
+        formInputs.forEach(input => {
+            if (input.type === 'radio') {
+                const radios = document.getElementsByName(input.name);
+                let radioChecked = false;
+                for (let r of radios) { if (r.checked) radioChecked = true; }
+                if (!radioChecked) isValid = false;
+            } else if (input.type === 'checkbox') {
+                if (!input.checked) isValid = false;
+            } else {
+                if (input.value.trim() === '') isValid = false;
+            }
+        });
+        submitBtn.disabled = !isValid;
+    }
+
+    formInputs.forEach(input => {
+        input.addEventListener('input', checkFormValidity);
+        input.addEventListener('change', checkFormValidity);
+    });
+    // --- LIVE VALIDATION LOGIC ---
+
+    const emailInput = document.getElementById('emailInput');
+    const phoneInput = document.getElementById('phoneInput');
+    const emailError = document.getElementById('emailError');
+    const phoneError = document.getElementById('phoneError');
+
+    // Generic function to check DB
+    async function checkAvailability(field, value, errorElement, inputElement) {
+        if (!value) return;
+
+        const response = await fetch('/check_value', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field: field, value: value })
+        });
+        
+        const data = await response.json();
+        
+        if (data.exists) {
+            errorElement.innerText = `This ${field} is already registered!`;
+            errorElement.style.display = 'block';
+            inputElement.classList.add('is-invalid'); // Bootstrap red border
+            submitBtn.disabled = true; // Hard lock the button
+        } else {
+            errorElement.style.display = 'none';
+            inputElement.classList.remove('is-invalid');
+            inputElement.classList.add('is-valid'); // Bootstrap green border
+            checkFormValidity(); // Re-check if we can unlock the button
+        }
+    }
+
+    // Listeners
+    emailInput.addEventListener('blur', function() {
+        checkAvailability('email', this.value, emailError, this);
+    });
+
+    phoneInput.addEventListener('blur', function() {
+        // Only check DB if length is exactly 10
+        if (this.value.length === 10) {
+            checkAvailability('phone', this.value, phoneError, this);
+        } else if (this.value.length > 0) {
+            phoneError.innerText = "Phone must be 10 digits.";
+            phoneError.style.display = 'block';
+            this.classList.add('is-invalid');
+            submitBtn.disabled = true;
+        }
+    });
+
+    // Clear error when user starts typing again
+    emailInput.addEventListener('input', function() {
+        emailError.style.display = 'none';
+        this.classList.remove('is-invalid', 'is-valid');
+    });
+
+    phoneInput.addEventListener('input', function() {
+        phoneError.style.display = 'none';
+        this.classList.remove('is-invalid', 'is-valid');
+    });
+</script>
+
+</body>
+</html>
