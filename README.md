@@ -17,8 +17,8 @@ A full-stack web application for college student registrations. Built with **Pyt
 ⚙️ Setup Instructions
 
 1. Clone the Repository
-   git clone [https://github.com/YOUR_USERNAME/student-registration-portal.git](https://github.com/YOUR_USERNAME/student-registration-portal.git)
-   cd student-registration-portal
+git clone [https://github.com/YOUR_USERNAME/student-registration-portal.git](https://github.com/YOUR_USERNAME/student-registration-portal.git)
+cd student-registration-portal
 
 2. Install Dependencies
    pip install flask psycopg2-binary
